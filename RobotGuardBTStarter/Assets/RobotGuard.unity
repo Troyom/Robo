@@ -1240,16 +1240,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e43e7170fb45b4b81dcd16d0ff55d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scripts:
-  - {fileID: 4900000, guid: c8cf4242e2bb24247ba6621ccddfa98a, type: 3}
+  scripts: []
   autoReset: 1
   tickOn: 0
-  sourceInfos:
-  - isFoldout: 1
-    breakPoints: 
-    breakPointStatuses: 
-    collapsedLines: 
-    btScript: 
+  sourceInfos: []
 --- !u!4 &1455764656 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400004, guid: f522d7a6ae22b4349bb8a2aa6cfb6bff,

@@ -9,16 +9,16 @@ public class AI : MonoBehaviour
 {
     public Transform player;
     public Transform bulletSpawn;
-    public Slider healthBar;   
+    public Slider healthBar;
     public GameObject bulletPrefab;
 
     NavMeshAgent agent;
 
-    //Ajeita a movimentaçao
+    //Ajeita a movimentaçao 
     public Vector3 destination;
-    
+
     //Aejita a mira
-    public Vector3 target;      
+    public Vector3 target;
 
     //Ajeita a vida
     float health = 100.0f;
@@ -35,26 +35,26 @@ public class AI : MonoBehaviour
     {
         agent = this.GetComponent<NavMeshAgent>();
         agent.stoppingDistance = shotRange - 5; //for a little buffer
-        InvokeRepeating("UpdateHealth",5,0.5f);
+        InvokeRepeating("UpdateHealth", 5, 0.5f);
     }
 
     void Update()
     {
         Vector3 healthBarPos = Camera.main.WorldToScreenPoint(this.transform.position);
         healthBar.value = (int)health;
-        healthBar.transform.position = healthBarPos + new Vector3(0,60,0);
+        healthBar.transform.position = healthBarPos + new Vector3(0, 60, 0);
     }
 
     void UpdateHealth()
     {
-       if(health < 100)
-        health ++;
+        if (health < 100)
+            health++;
     }
 
     //Faz o player perder vida ao ser atingido
     void OnCollisionEnter(Collision col)
     {
-        if(col.gameObject.tag == "bullet")
+        if (col.gameObject.tag == "bullet")
         {
             health -= 10;
         }
@@ -81,6 +81,75 @@ public class AI : MonoBehaviour
         {
             Task.current.Succeed();
         }
+    }
+
+    [Task]
+    public void PickDestination(int x, int z)
+    {
+
+        Vector3 dest = new Vector3(x, 0, z);
+
+        agent.SetDestination(dest);
+
+        Task.current.Succeed();
+    }
+
+    [Task]
+    public void TargetPlayer()
+    {
+        target = player.transform.position;
+        Task.current.Succeed();
+    }
+
+    [Task]
+    public bool Fire()
+    {
+        GameObject bullet = GameObject.Instantiate(bulletPrefab,
+            bulletSpawn.transform.position, bulletSpawn.transform.rotation);
+        bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * 2000);
+
+        return true;
+    }
+
+    [Task]
+    public void LookAtTarget()
+    {
+        Vector3 direction = target - this.transform.position;
+
+        this.transform.rotation = Quaternion.Slerp(this.transform.rotation,
+            Quaternion.LookRotation(direction), Time.deltaTime * rotSpeed);
+
+        if (Task.isInspected) Task.current.debugInfo = string.Format("angle={0}",
+            Vector3.Angle(this.transform.forward, direction));
+
+        if (Vector3.Angle(this.transform.forward, direction) < 5.0f)
+        {
+            Task.current.Succeed();
+        }
+    }
+
+    [Task]
+    bool SeePlayer()
+    {
+        Vector3 distance = player.transform.position - this.transform.position;
+        RaycastHit hit; bool seeWall = false; 
+        Debug.DrawRay(this.transform.position, distance, Color.red);
+
+        if (Physics.Raycast(this.transform.position, distance, out hit))
+        {
+            if (hit.collider.gameObject.tag == "wall")
+            {
+                seeWall = true;
+            }
+        }
+        if (Task.isInspected) Task.current.debugInfo = string.Format("wall={0}", seeWall); 
+        
+        if (distance.magnitude < visibleRange && !seeWall) return true; else return false;
+    }
+    [Task] bool Turn(float angle){ 
+        var p = this.transform.position + Quaternion.AngleAxis
+            (angle, Vector3.up) * this.transform.forward; 
+        target = p; return true; 
     }
 }
 
