@@ -151,5 +151,18 @@ public class AI : MonoBehaviour
             (angle, Vector3.up) * this.transform.forward; 
         target = p; return true; 
     }
+    [Task]
+    public bool IsHealthLessThan(float health)
+    {
+        return this.health < health;
+    }
+    [Task]
+    public bool Explode()
+    {
+        Destroy(healthBar.gameObject);
+        Destroy(this.gameObject);
+        return true;
+    }
+
 }
 
