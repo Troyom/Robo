@@ -10,18 +10,16 @@ tree("Dead")
 
 tree("Patrol")
 	fallback
-		tree("Attack")
+		tree("Run")
 		while IsHealthLessThan(40.0)
 			fallback
 				tree("Wander")
 
-tree("Attack")
+tree("Run")
 	while SeePlayer
 		sequence
-			TargetPlayer
-			LookAtTarget
+			Fugir
 			Wait(0.1)
-			Fire
 
 tree("Wander")
 	sequence

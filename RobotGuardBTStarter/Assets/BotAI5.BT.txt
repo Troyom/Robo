@@ -10,20 +10,29 @@ tree("Dead")
 
 tree("Patrol")
 	fallback
-		tree("Attack")
+		tree("Grand")
 		while IsHealthLessThan(40.0)
 			fallback
-				tree("Wander")
+				tree("Olhar")
 
-tree("Attack")
+tree("Grand")
 	while SeePlayer
 		sequence
 			TargetPlayer
 			LookAtTarget
-			Wait(0.1)
-			Fire
+			Chase
 
-tree("Wander")
+tree("Olhar")
 	sequence
-		PickRandomDestination
-		MoveToDestination
+		Turn(90.0)
+		LookAtTarget
+		Wait(0.3)
+		Turn(130.0)
+		LookAtTarget
+		Wait(0.3)
+		Turn(30.0)
+		LookAtTarget
+		Wait(0.3)
+		Turn(70.0)
+		LookAtTarget
+		Wait(0.3)

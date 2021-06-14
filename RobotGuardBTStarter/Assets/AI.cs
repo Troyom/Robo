@@ -11,6 +11,7 @@ public class AI : MonoBehaviour
     public Transform bulletSpawn;
     public Slider healthBar;
     public GameObject bulletPrefab;
+    public Transform[] patrulha;
 
     NavMeshAgent agent;
 
@@ -29,7 +30,7 @@ public class AI : MonoBehaviour
     float visibleRange = 80.0f;
 
     //Alcance do tiro
-    float shotRange = 40.0f;
+    public float shotRange = 40.0f;
 
     void Start()
     {
@@ -163,6 +164,47 @@ public class AI : MonoBehaviour
         Destroy(this.gameObject);
         return true;
     }
+    [Task]
+    public void Chase()
+    {
+        agent.SetDestination(player.position);
+        if (agent.remainingDistance < 30)
+        {
+            Task.current.Succeed();
+        }
+    }
+    [Task]
+    public void Fugir()
+    {
+        float distance = Vector3.Distance(transform.position, player.transform.position);
+
+        if (distance <= 30)
+        {
+            Vector3 dirToPlayer = player.transform.position - transform.position;
+
+            Vector3 newPos = transform.position - dirToPlayer;
+
+            agent.SetDestination(newPos);
+            agent.speed = 30;
+        }
+
+        if (distance > 30f)
+        {
+            Task.current.Succeed();
+        }
+
+    }
+    [Task]
+    public void Patrulha(int i)
+    {
+        agent.SetDestination(patrulha[i].position);
+
+        if (agent.remainingDistance <= 5)
+        {
+            Task.current.Succeed();
+        }
+    }
+
 
 }
 

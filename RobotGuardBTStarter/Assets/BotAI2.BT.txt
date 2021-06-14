@@ -13,7 +13,7 @@ tree("Patrol")
 		tree("Attack")
 		while IsHealthLessThan(40.0)
 			fallback
-				tree("Wander")
+				tree("Grand")
 
 tree("Attack")
 	while SeePlayer
@@ -23,7 +23,6 @@ tree("Attack")
 			Wait(0.1)
 			Fire
 
-tree("Wander")
+tree("Grand")
 	sequence
-		PickRandomDestination
-		MoveToDestination
+		Chase
